@@ -1,0 +1,30 @@
+bild = imread('Dreieck.png');
+bildD = double(bild ./ 255);
+
+figure;
+imshow(bildD);
+
+%% 1. Kanten
+
+%% a)
+maske = [1 0 -1];
+maskeT = [1; 0; -1];
+
+gradientX = conv2(bildD, maske, 'same')
+gradientY = conv2(bildD, maskeT, 'same');
+
+figure;
+imshow(gradientX, []);
+figure;
+imshow(gradientY, []);
+
+% Welche Werte des jeweiligen Ergebnisbildes sind positiv, welche negativ?
+% Die Bildunkte der Hypotenuse des Dreiecks und des rechten Rands haben den 
+% Wert -1 im Ergebnisbild der Ableitung in x-Richtung. 
+% Die Bildpunkte der vertikalen Kathete des Dreiecks und des linken Rands
+% haben den Wert +1 im Ergebnisbild der Ableitung in y-Richtung.  
+% Warum? 
+% Grund dafür ist die Faltungsoperation, die bei  
+% Überlegen Sie sich, in welche Richtung der Gradient auf den Seiten des 
+% Dreiecks zeigt.
+
