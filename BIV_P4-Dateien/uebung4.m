@@ -8,7 +8,7 @@ figure;
 imshow(ergebnis);
 % Warum ist das Ergebnis heller?
 % weil nicht durch die Summe aller Werte geteilt wird
-newmask = [1 2 1] ./5;
+newmask = [1 2 1] ./4;
 ergebnis = conv2(shadingimage, newmask);
 figure;
 imshow(ergebnis);
@@ -17,7 +17,7 @@ ergebnis = shadingimage;
 figure;
 imshow(ergebnis);
 for m = 1:50
-ergebnis = conv2(shadingimage, newmask);
+ergebnis = conv2(ergebnis, newmask);
 end;
 figure;
 imshow(ergebnis);

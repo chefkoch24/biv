@@ -10,7 +10,7 @@ imshow(ergebnisA);
 title('ergebnisA');
 
 
-maskeKorrigiert = maske ./ 3;
+maskeKorrigiert = maske ./ 4;
 ergebnisAKorrigiert = conv2(shadingimage, maskeKorrigiert);
 figure;
 imshow(ergebnisAKorrigiert);
