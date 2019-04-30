@@ -265,6 +265,38 @@ imshow(ergebnisNoisy);
 
 %% 4. Verkleinern eines Bildes 
 
+bildRinge = imread('ringe.png');
+bildRingeD = double(bildRinge(:,:,1) ./ 255);
+
+figure;
+imshow(bildRingeD);
+
 %% a) 
 
+bildRingeKlein = imresize(bildRingeD, 0.1, 'nearest');
+
+figure;
+imshow(bildRingeKlein);
+
+% Was beobachten Sie?
+% Das Muster ist nach der Verkleinerung ein ganz anderes, es entsteht 
+% Aliasing aufgrund des Moiré Effekts.
+
 %% b) 
+
+bildRingeGlatt = bildRingeD;
+
+for i = 1:20
+    bildRingeGlatt = conv2(gauss3, gauss3.', bildRingeGlatt);
+end
+
+figure;
+imshow(bildRingeGlatt);
+
+bildRingeGlattKlein = imresize(bildRingeGlatt, 0.1, 'nearest');
+
+figure;
+imshow(bildRingeGlattKlein);
+
+% Je öfter das Bild geglättet wird, desto schwächer fällt das
+% Aliasing aus.
