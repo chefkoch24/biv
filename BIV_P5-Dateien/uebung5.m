@@ -25,3 +25,8 @@ faktor = 0.5;
 laplace_mond = conv2(mond, faktor*laplace_mask, 'same');
 ergebnis = mond - laplace_mond;
 imshow(ergebnis); figure;
+%% 2a)
+biv = imread("BIVn.png");
+bivhist = imhist(biv);
+bins = bivhist>0;
+sum(bins==1)
