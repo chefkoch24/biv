@@ -5,8 +5,6 @@ ableitung_y = [1; 0; -1] ./2;
 x_kanten = conv2(dreieck, ableitung_x, 'same');
 y_kanten = conv2(dreieck, ableitung_y, 'same');
 imshow(dreieck); figure;
-% imshow(meinBild, []); Damit wird automatisch eine Grauwertskalierung 
-% auf den maximalen Kontrast durchgeführt.
 imshow(x_kanten, []); figure;
 imshow(y_kanten, []); figure;
 %% 1b)
@@ -30,3 +28,15 @@ biv = imread("BIVn.png");
 bivhist = imhist(biv);
 bins = bivhist>0;
 sum(bins==1)
+%% 3b)
+%1)
+maske = [1 0 -1] ./2;
+maskeT = [1; 0; -1] ./2;
+bildNoise = imread('HausNoisy.png');
+bildNoiseD = double(bildNoise) ./ 255;
+imshow(bildNoiseD); title('Original') ;figure;
+gradientNoiseX = conv2(bildNoiseD, maske, "same");
+gradientNoiseY = conv2(bildNoiseD, maskeT, "same");
+betragNoise = (gradientNoiseX .^2 + gradientNoiseY .^2).^0.5;
+
+imshow(betragNoise); title('Betrag des Gradienten des HausNoisy Bildes'); figure;
