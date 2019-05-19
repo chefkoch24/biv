@@ -1,20 +1,21 @@
 %% 1a)
 % https://de.mathworks.com/company/newsletters/articles/the-watershed-transform-strategies-for-image-segmentation.html
-I = imread("grains.jpg");
+I = im2double(imread("grains.jpg"));
 I = rgb2gray(I);
 I = imgaussfilt(I);
 I = imadjust(I);
-I = imhmin(I,20); %20 is the height threshold for suppressing shallow minima
+%I = imhmin(I,20); %20 is the height threshold for suppressing shallow minima
 L = watershed(imcomplement(I))
 %L = imhmin(L,20); %20 is the height threshold for suppressing shallow minima
-%Lrgb = label2rgb(L);
-imshow(L,[]); figure;
+Lrgb = label2rgb(L);
+imshow(Lrgb); figure;
 %imshow(I); figure;
 %I = imhmin(I,20); %20 is the height threshold for suppressing shallow minima
 %I2 = imcomplement(I);
 %imshow(I2); figure;
 %L = watershed(I2);
 %imshow(L); figure;
+%imshow(L, 'jet', 'b')
 %% 1b)
 b = L;
 b(L>0) = 1
@@ -26,7 +27,7 @@ segments = max(L, [],'all')
 ifm = imread('ifm_seg.jpg');
 imshow(ifm); figure;
 imshow(imcomplement(ifm)); figure;
-pic = imbinarize(ifm, 0);
+pic = imbinarize(ifm, 0)
 pic(ifm>0) = 1;
 % Wie findet man die Abstände raus
 D = bwdist(imcomplement(pic));
@@ -35,14 +36,19 @@ title('Distance transform of ~bw')
 % Complement the distance transform, and force pixels that don't belong to the objects to be at Inf .
 D = -D;
 D(~pic) = Inf;
-J = imhmin(D, 1);
+J = 
 %imshow(D); figure;
-L = watershed(J);
+L = watershed(D);
 L(~pic) = 0;
 rgb = label2rgb(L,'jet',[.5 .5 .5]);
 figure
 imshow(rgb,'InitialMagnification','fit')
 title('Watershed transform of D')
+%%
+imhmin
+imcomplement
+imgaussfilt
+imadjust
 %% Example
 center1 = -10;
 center2 = -center1;
