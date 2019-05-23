@@ -1,69 +1,34 @@
 %% 1a)
-% https://de.mathworks.com/company/newsletters/articles/the-watershed-transform-strategies-for-image-segmentation.html
 I = imread("grains.jpg");
 I = rgb2gray(I);
 I = imgaussfilt(I);
-I = imadjust(I);
-I = imhmin(I,20); %20 is the height threshold for suppressing shallow minima
-L = watershed(imcomplement(I))
-%L = imhmin(L,20); %20 is the height threshold for suppressing shallow minima
-%Lrgb = label2rgb(L);
-imshow(L,[]); figure;
-%imshow(I); figure;
-%I = imhmin(I,20); %20 is the height threshold for suppressing shallow minima
-%I2 = imcomplement(I);
-%imshow(I2); figure;
-%L = watershed(I2);
-%imshow(L); figure;
+I = imcomplement(I);
+I = imhmin(I,20);
+L = watershed(I);
+figure; imshow(L>0,[]); 
 %% 1b)
-b = L;
-b(L>0) = 1
-overlay = imoverlay(I, b, [1 0 0]); % [r g b]
+b = zeros(300,400);
+b(L == 0) = 1;
+I = imcomplement(I);
+overlay = imoverlay(I, b, 'r'); % [r g b]
 imshow(overlay);
 %% 1c)
-segments = max(L, [],'all')
+segments = max(L, [], 'all')
 %% 2
 ifm = imread('ifm_seg.jpg');
-imshow(ifm); figure;
-imshow(imcomplement(ifm)); figure;
-pic = imbinarize(ifm, 0);
+figure; imshow(ifm); 
+figure; imshow(imcomplement(ifm)); 
 pic(ifm>0) = 1;
-% Wie findet man die Abstände raus
 D = bwdist(imcomplement(pic));
-imshow(D,[],'InitialMagnification','fit'); figure;
+figure; imshow(D,[],'InitialMagnification','fit'); 
 title('Distance transform of ~bw')
 % Complement the distance transform, and force pixels that don't belong to the objects to be at Inf .
 D = -D;
 D(~pic) = Inf;
-J = imhmin(D, 1);
-%imshow(D); figure;
-L = watershed(J);
+D = imhmin(D, 1);
+L = watershed(D);
 L(~pic) = 0;
 rgb = label2rgb(L,'jet',[.5 .5 .5]);
-figure
-imshow(rgb,'InitialMagnification','fit')
-title('Watershed transform of D')
-%% Example
-center1 = -10;
-center2 = -center1;
-dist = sqrt(2*(2*center1)^2);
-radius = dist/2 * 1.4;
-lims = [floor(center1-1.2*radius) ceil(center2+1.2*radius)];
-[x,y] = meshgrid(lims(1):lims(2));
-bw1 = sqrt((x-center1).^2 + (y-center1).^2) <= radius;
-bw2 = sqrt((x-center2).^2 + (y-center2).^2) <= radius;
-bw = bw1 | bw2;
-figure
-imshow(bw,'InitialMagnification','fit'), title('bw')
-D = bwdist(~bw);
-figure
-imshow(D,[],'InitialMagnification','fit')
-title('Distance transform of ~bw')
-D = -D;
-D(~bw) = Inf;
-L = watershed(D);
-L(~bw) = 0;
-rgb = label2rgb(L,'jet',[.5 .5 .5]);
-figure
+figure;
 imshow(rgb,'InitialMagnification','fit')
 title('Watershed transform of D')
