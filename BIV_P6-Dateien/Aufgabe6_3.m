@@ -1,59 +1,32 @@
+%% 
 %% Aufgabe 1: Wasserscheidentransformation zur Bildsegmentierung
-% doc imcomplement
-% doc imhmin
-% doc imgradient
-% doc watershed
-% doc imadjust
-%imhmin(bildGrains, 0.05, 4);
-% doc histcounts
-% doc label2rgb
-% doc imoverlay
 %% a)
 
 % Bild einlesen
 bildGrainsRGB = imread('grains.jpg');
 bildGrains = rgb2gray(bildGrainsRGB);
 
-%figure;
-%imshow(bildGrains);
-
-%bildGrains = imadjust(bildGrains);
+figure;
+imshow(bildGrains);
+title('Original');
 
 % Bild gl‰tten
 bildGrains = imgaussfilt(bildGrains);
 
+% Komplement erstellen
+bildGrains = imcomplement(bildGrains);
+
 % Flache Pools entfernen 
-%bildGrains = imhmin(bildGrains,100);
-
-% Bild in Bin‰rbild umwandeln
-binGrains = zeros(300, 400);
-binGrains(bildGrains >= 150) = 1;
-
-figure;
-imshow(binGrains);
-
-histogramm = imhist(bildGrains);
-figure;
-plot(histogramm);
-
-% Distanztransformation 
-distanzT = bwdist(~binGrains);
-figure;
-imshow(distanzT, []);
-
-distanzT = imadjust(distanzT);
-
-distanzT = -distanzT;
-distanzT(~binGrains) = inf;
+bildGrains = imhmin(bildGrains,20);
 
 % Wasserscheidentransformation
-wasserscheidenT = watershed(distanzT);
-wasserscheidenT(~binGrains) = 0;
+wasserscheidenT = watershed(bildGrains);
 
 % Labels in RGB Bild umwandeln
 rgb = label2rgb(wasserscheidenT,'jet',[.5 .5 .5]);
 figure; 
 imshow(rgb);
+title('label2rgb');
 
 %% b)
 
@@ -65,6 +38,7 @@ bildGrainsRot = imoverlay(bildGrainsRot, wasserscheiden, 'r');
 
 figure;
 imshow(bildGrainsRot);
+title('Wasserscheiden');
 
 %% c)
 
@@ -73,7 +47,7 @@ anzahlSegmente = max(wasserscheidenT(:))
 %% d)
 
 % Anzahl Pixel der Wasserscheiden
-countSegmente = histcounts(wasserscheidenT, anzahlSegmente+1);
+countSegmente = histcounts(wasserscheidenT, anzahlSegmente);
 pixelWasserscheide = countSegmente(1,1)
 
 % Anzahl Pixel des groeﬂten Segments 
@@ -89,26 +63,30 @@ bildGrainsGruen = imoverlay(bildGrainsRGB, segmentGruen, 'g');
 
 figure;
 imshow(bildGrainsGruen);
+title('Groeﬂte Segment');
 
 %% Aufgabe 2: Trennung von Segmenten
 
 bildIfm = imread('ifm.jpg');
-%figure;
+figure;
 imshow(bildIfm);
+title('Original');
 
 bildIfmSeg = imread('ifm_seg.jpg');
-%figure;
+figure;
 imshow(bildIfmSeg);
+title('Segmentiert');
 
 % Distanztransformation 
 distanzT = bwdist(~bildIfmSeg);
-%figure;
+figure;
 imshow(distanzT, []);
-
-distanzT = imhmin(distanzT, 1);
+title('Distanztransformation');
 
 distanzT = -distanzT;
 distanzT(~bildIfmSeg) = inf;
+
+distanzT = imhmin(distanzT, 1);
 
 % Wasserscheidentransformation
 wasserscheidenIfm = watershed(distanzT);
@@ -118,9 +96,4 @@ wasserscheidenIfm(~bildIfmSeg) = 0;
 rgb = label2rgb(wasserscheidenIfm,'jet',[.5 .5 .5]);
 figure; 
 imshow(rgb);
-
-% 
-anzahlSegmente = max(wasserscheidenIfm(:))
-
-
-%% Aufgabe 3: Wasserscheidentransformation zur Bildsegmentierung - Teil 2
+title('label2rgb');
